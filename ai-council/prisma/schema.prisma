@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+}
+
+model User {
+  id               String   @id @default(cuid())
+  clerkId          String   @unique
+  email            String?
+  credits          Int      @default(10) // 10 free credits at first login
+  stripeCustomerId String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  creditTransactions CreditTransaction[]
+  councilRuns        CouncilRun[]
+}
+
+model CreditTransaction {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    Int
+  reason    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Persona {
+  id           String   @id @default(cuid())
+  name         String   @unique
+  systemPrompt String
+  status       String   @default("active") // "active" | "inactive"
+  runs         Int      @default(0)
+  wins         Int      @default(0)
+  voteScore    Int      @default(0)
+  badJson      Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  answers      PersonaAnswer[]
+}
+
+model CouncilRun {
+  id          String          @id @default(cuid())
+  userId      String?
+  user        User?           @relation(fields: [userId], references: [id])
+  userQuery   String
+  winnerId    String?
+  createdAt   DateTime        @default(now())
+  answers     PersonaAnswer[]
+}
+
+model PersonaAnswer {
+  id           String     @id @default(cuid())
+  councilRunId String
+  councilRun   CouncilRun @relation(fields: [councilRunId], references: [id])
+
+  personaId    String
+  persona      Persona    @relation(fields: [personaId], references: [id])
+
+  raw          Json
+  votedFor     String?
+  isWinner     Boolean    @default(false)
+}
