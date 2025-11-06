@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Button } from '@/components/ui/button'
-import { Plus, MessageSquare } from 'lucide-react'
+import { MessageSquare } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface RunItem {
@@ -69,61 +68,128 @@ export function ChatHistory({ selectedRunId, onSelectRun, onNewChat, refreshTrig
     return text.slice(0, maxLength) + '...'
   }
 
+  // Group runs by date
+  const groupRunsByDate = () => {
+    const today: RunItem[] = []
+    const week: RunItem[] = []
+    const older: RunItem[] = []
+    const now = new Date()
+
+    runs.forEach((run) => {
+      const runDate = new Date(run.createdAt)
+      const diffDays = Math.floor((now.getTime() - runDate.getTime()) / 86400000)
+
+      if (diffDays === 0) {
+        today.push(run)
+      } else if (diffDays < 7) {
+        week.push(run)
+      } else {
+        older.push(run)
+      }
+    })
+
+    return { today, week, older }
+  }
+
+  const { today, week, older } = groupRunsByDate()
+
   return (
-    <div className="flex flex-col h-full border-r bg-muted/30">
-      <div className="p-4 border-b">
-        <Button
-          onClick={onNewChat}
-          className="w-full"
-          size="sm"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          New Chat
-        </Button>
-      </div>
-      
-      <ScrollArea className="flex-1">
-        <div className="p-2">
-          {loading ? (
-            <div className="text-sm text-muted-foreground p-4 text-center">
-              Loading...
+    <ScrollArea className="flex-1">
+      <div className="p-2">
+        {loading ? (
+          <div className="text-sm text-muted-foreground p-8 text-center">
+            <div className="animate-pulse">Loading conversations...</div>
+          </div>
+        ) : runs.length === 0 ? (
+          <div className="p-8 text-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-lg bg-sidebar-accent flex items-center justify-center">
+              <MessageSquare size={30} className="opacity-50 text-sidebar-foreground/40" />
             </div>
-          ) : runs.length === 0 ? (
-            <div className="text-sm text-muted-foreground p-4 text-center">
-              No chat history yet
-            </div>
-          ) : (
-            <div className="space-y-1">
-              {runs.map((run) => (
-                <button
-                  key={run.id}
-                  onClick={() => onSelectRun(run.id)}
-                  className={cn(
-                    "w-full text-left p-3 rounded-lg transition-colors",
-                    "hover:bg-muted",
-                    selectedRunId === run.id
-                      ? "bg-primary/10 border border-primary/20"
-                      : "border border-transparent"
-                  )}
-                >
-                  <div className="flex items-start gap-2 mb-1">
-                    <MessageSquare className="w-4 h-4 mt-0.5 text-muted-foreground flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground line-clamp-2">
-                        {truncate(run.userQuery, 60)}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {formatDate(run.createdAt)}
+            <p className="text-sm text-sidebar-foreground/60">No threads found</p>
+          </div>
+        ) : (
+          <div className="space-y-1">
+            {today.length > 0 && (
+              <div className="mb-2">
+                <div className="px-3 py-1.5 text-xs font-semibold text-sidebar-foreground/60 uppercase tracking-wider">
+                  Today
+                </div>
+                {today.map((run) => (
+                  <button
+                    key={run.id}
+                    onClick={() => onSelectRun(run.id)}
+                    className={cn(
+                      "w-full text-left p-2 rounded-lg transition-colors overflow-x-hidden flex items-center relative px-0 group/link-item",
+                      selectedRunId === run.id
+                        ? "bg-sidebar-accent"
+                        : "hover:bg-sidebar-accent"
+                    )}
+                  >
+                    <div className="p-2 text-nowrap overflow-hidden w-[95%] truncate px-3">
+                      <p className="truncate text-sm text-sidebar-foreground">
+                        {truncate(run.userQuery, 40)}
                       </p>
                     </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      </ScrollArea>
-    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {week.length > 0 && (
+              <div className="mb-2">
+                <div className="px-3 py-1.5 text-xs font-semibold text-sidebar-foreground/60 uppercase tracking-wider">
+                  Earlier
+                </div>
+                {week.map((run) => (
+                  <button
+                    key={run.id}
+                    onClick={() => onSelectRun(run.id)}
+                    className={cn(
+                      "w-full text-left p-2 rounded-lg transition-colors overflow-x-hidden flex items-center relative px-0 group/link-item",
+                      selectedRunId === run.id
+                        ? "bg-sidebar-accent"
+                        : "hover:bg-sidebar-accent"
+                    )}
+                  >
+                    <div className="p-2 text-nowrap overflow-hidden w-[95%] truncate px-3">
+                      <p className="truncate text-sm text-sidebar-foreground">
+                        {truncate(run.userQuery, 40)}
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {older.length > 0 && (
+              <div className="mb-2">
+                <div className="px-3 py-1.5 text-xs font-semibold text-sidebar-foreground/60 uppercase tracking-wider">
+                  Older
+                </div>
+                {older.map((run) => (
+                  <button
+                    key={run.id}
+                    onClick={() => onSelectRun(run.id)}
+                    className={cn(
+                      "w-full text-left p-2 rounded-lg transition-colors overflow-x-hidden flex items-center relative px-0 group/link-item",
+                      selectedRunId === run.id
+                        ? "bg-sidebar-accent"
+                        : "hover:bg-sidebar-accent"
+                    )}
+                  >
+                    <div className="p-2 text-nowrap overflow-hidden w-[95%] truncate px-3">
+                      <p className="truncate text-sm text-sidebar-foreground">
+                        {truncate(run.userQuery, 40)}
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </ScrollArea>
   )
 }
 
