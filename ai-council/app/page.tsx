@@ -192,20 +192,39 @@ export default function Home() {
       </main>
 
       {/* Top Right Actions - with background box like reference */}
-      <div className="fixed pointer-events-auto right-4 top-4 z-50 flex flex-row p-1 items-center justify-center bg-sidebar rounded-md duration-100 transition-[translate-x] ease-snappy gap-1 text-muted-foreground">
+      <div className="fixed pointer-events-auto right-4 top-4 z-50 flex items-center justify-center gap-1.5 rounded-full border border-sidebar-border/60 bg-sidebar px-2.5 py-1.5 text-sidebar-foreground shadow-sm duration-100 transition-[translate-x] ease-snappy">
         {/* Settings */}
         <Link href="/user">
-          <Button variant="ghost" size="icon" title="Settings">
+          <Button
+            variant="ghost"
+            size="icon"
+            title="Settings"
+            aria-label="Settings"
+            className="h-9 w-9 rounded-full text-inherit hover:bg-sidebar-accent/70"
+          >
             <Settings className="w-4 h-4" />
           </Button>
         </Link>
         {/* Theme toggle */}
-        <Button variant="ghost" size="icon" onClick={toggleTheme} title="Theme">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleTheme}
+          title="Theme"
+          aria-label="Toggle theme"
+          className="h-9 w-9 rounded-full text-inherit hover:bg-sidebar-accent/70"
+        >
           {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
         </Button>
         {/* Personas */}
         <Link href="/personas">
-          <Button variant="ghost" size="icon" title="Personas">
+          <Button
+            variant="ghost"
+            size="icon"
+            title="Personas"
+            aria-label="Personas"
+            className="h-9 w-9 rounded-full text-inherit hover:bg-sidebar-accent/70"
+          >
             <Users className="w-4 h-4" />
           </Button>
         </Link>
