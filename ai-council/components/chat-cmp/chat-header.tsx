@@ -1,15 +1,17 @@
+"use client"
+
 import React from 'react'
 
-const ChatHeader = () => {
+const ChatHeader: React.FC = () => {
   return (
     <div className="w-full hidden md:block relative">
       <div
-        className="absolute overflow-hidden transition-[top] duration-100 ease-snappy grid place-items-center -right-3 top-0 !z-10 h-16 w-40 max-sm:hidden pointer-events-none"
+        className="pointer-events-none fixed top-0 right-0 z-30 h-20 w-40 max-sm:hidden overflow-hidden transition-[top] duration-100 ease-snappy grid place-items-center"
         style={{ clipPath: 'inset(0px 12px 0px 0px)' }}
       >
-        <div className="group pointer-events-none absolute top-3.5 z-10 -mb-8 h-32 w-full origin-top ease-snappy">
+        <div className="group pointer-events-none absolute top-3.5 z-10 -mb-8 h-32 w-full origin-top ease-snappy transition-all">
           <svg
-            className="absolute h-9 origin-top-left skew-x-[30deg] overflow-visible"
+            className="absolute h-9 origin-top-left skew-x-[30deg] overflow-visible transform-gpu duration-300 -right-16 translate-x-1"
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 128 32"

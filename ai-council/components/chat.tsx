@@ -376,8 +376,7 @@ export function Chat({ credits, onCreditsUpdate, onNewRun, selectedRunId, userNa
   return (
     <div className="flex flex-col h-full bg-chat-background relative">
       <div className="flex-1 overflow-y-auto pt-5 md:pt-0">
-        <div className="mx-auto flex w-full max-w-3xl flex-col space-y-12 px-4 pb-10 pt-safe-offset-10">
-          {messages.length === 0 && (
+        {messages.length === 0 && (
             <div className="flex h-[calc(100vh-20rem)] items-center justify-center">
               <div className="w-full max-w-2xl space-y-6 px-2 duration-300 animate-in fade-in-50 zoom-in-95 sm:px-8">
                 <h2 className="text-2xl md:text-3xl font-semibold text-center">
@@ -571,10 +570,9 @@ export function Chat({ credits, onCreditsUpdate, onNewRun, selectedRunId, userNa
                 <p className="text-sm text-muted-foreground font-semibold">{currentPhase}</p>
               </div>
             </div>
-          )}
-          
-          <div ref={scrollRef} />
-        </div>
+        )}
+        
+        <div ref={scrollRef} />
       </div>
 
       <div className="absolute !bottom-0 h-fit inset-x-0 w-full">

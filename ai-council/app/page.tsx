@@ -8,7 +8,9 @@ import { ChatHistory } from '@/components/chat-history'
 import { Button } from '@/components/ui/button'
 import { Settings, Plus, Search, Users, Sun, Moon, Info } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import ChatHeader from '@/components/chat-header'
+import ChatHeader from '@/components/chat-cmp/chat-header'
+import ChatContainer from '@/components/chat-cmp/chat-container'
+import { SignInButton } from '@clerk/nextjs'
 
 export default function Home() {
   const { isSignedIn, user } = useUser()
@@ -67,9 +69,16 @@ export default function Home() {
   if (!isSignedIn) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">AI Council</h1>
-          <p className="text-muted-foreground">Please sign in to continue.</p>
+        <div className="text-center space-y-6">
+          <div className="space-y-2">
+            <h1 className="text-4xl font-bold mb-4">AI Council</h1>
+            <p className="text-muted-foreground">Please sign in to continue.</p>
+          </div>
+          <SignInButton mode="modal">
+            <Button variant="t3" size="lg" className="px-8">
+              Sign In
+            </Button>
+          </SignInButton>
         </div>
       </div>
     )
@@ -168,34 +177,36 @@ export default function Home() {
           {/* Main Content */}
           <div className="flex-1 overflow-hidden bg-chat-background">
             <div className="h-full overflow-y-auto pt-5 md:pt-0">
-              <Chat
-                credits={credits}
-                onCreditsUpdate={setCredits}
-                onNewRun={handleNewRun}
-                selectedRunId={selectedRunId}
-                userName={user?.fullName?.split(' ')[0] || 'User'}
-              />
+              <ChatContainer>
+                <Chat
+                  credits={credits}
+                  onCreditsUpdate={setCredits}
+                  onNewRun={handleNewRun}
+                  selectedRunId={selectedRunId}
+                  userName={user?.fullName?.split(' ')[0] || 'User'}
+                />
+              </ChatContainer>
             </div>
           </div>
         </div>
       </main>
 
-      {/* Top Right Actions - flat, no glass */}
-      <div className="fixed right-2 top-2 z-[100] flex flex-row gap-1 text-muted-foreground">
+      {/* Top Right Actions - with background box like reference */}
+      <div className="fixed pointer-events-auto right-4 top-4 z-50 flex flex-row p-1 items-center justify-center bg-sidebar rounded-md duration-100 transition-[translate-x] ease-snappy gap-1 text-muted-foreground">
+        {/* Settings */}
+        <Link href="/user">
+          <Button variant="ghost" size="icon" title="Settings">
+            <Settings className="w-4 h-4" />
+          </Button>
+        </Link>
         {/* Theme toggle */}
         <Button variant="ghost" size="icon" onClick={toggleTheme} title="Theme">
           {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
         </Button>
-        {/* Personas button (replaces GitHub) */}
+        {/* Personas */}
         <Link href="/personas">
           <Button variant="ghost" size="icon" title="Personas">
             <Users className="w-4 h-4" />
-          </Button>
-        </Link>
-        {/* Settings → User Info (Clerk) */}
-        <Link href="/user">
-          <Button variant="ghost" size="icon" title="User settings">
-            <Settings className="w-4 h-4" />
           </Button>
         </Link>
       </div>
