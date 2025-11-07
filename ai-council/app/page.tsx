@@ -84,10 +84,50 @@ export default function Home() {
     )
   }
 
+  const dockButtonClass =
+    'h-10 w-10 shrink-0 rounded-full text-sidebar-foreground transition-colors hover:bg-sidebar-border/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-border/80 focus-visible:ring-offset-0'
+
   return (
     <div className="h-dvh w-full flex flex-col overflow-hidden bg-background">
       <main className="flex-1 overflow-hidden z-20 border-chat-border bg-chat-background transition-[margin-top,height,rounded] md:mt-3.5 h-full md:border md:rounded-tl-xl duration-100 ease-snappy">
-        <ChatHeader />
+        <ChatHeader
+          actions={
+            <>
+              <Link href="/user" className="flex items-center justify-center">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  title="Settings"
+                  aria-label="Settings"
+                  className={dockButtonClass}
+                >
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </Link>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleTheme}
+                title="Theme"
+                aria-label="Toggle theme"
+                className={dockButtonClass}
+              >
+                {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              </Button>
+              <Link href="/personas" className="flex items-center justify-center">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  title="Personas"
+                  aria-label="Personas"
+                  className={dockButtonClass}
+                >
+                  <Users className="h-4 w-4" />
+                </Button>
+              </Link>
+            </>
+          }
+        />
         <div className="h-full flex overflow-hidden">
           {/* Sidebar */}
           <aside className={`${sidebarOpen ? 'w-72' : 'w-0'} transition-all duration-200 flex-shrink-0 border-r border-sidebar-border bg-sidebar-background overflow-hidden`}>
@@ -190,45 +230,6 @@ export default function Home() {
           </div>
         </div>
       </main>
-
-      {/* Top Right Actions - with background box like reference */}
-      <div className="fixed pointer-events-auto right-4 top-4 z-50 flex items-center justify-center gap-1.5 rounded-full border border-sidebar-border/60 bg-sidebar px-2.5 py-1.5 text-sidebar-foreground shadow-sm duration-100 transition-[translate-x] ease-snappy">
-        {/* Settings */}
-        <Link href="/user">
-          <Button
-            variant="ghost"
-            size="icon"
-            title="Settings"
-            aria-label="Settings"
-            className="h-9 w-9 rounded-full text-inherit hover:bg-sidebar-accent/70"
-          >
-            <Settings className="w-4 h-4" />
-          </Button>
-        </Link>
-        {/* Theme toggle */}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={toggleTheme}
-          title="Theme"
-          aria-label="Toggle theme"
-          className="h-9 w-9 rounded-full text-inherit hover:bg-sidebar-accent/70"
-        >
-          {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-        </Button>
-        {/* Personas */}
-        <Link href="/personas">
-          <Button
-            variant="ghost"
-            size="icon"
-            title="Personas"
-            aria-label="Personas"
-            className="h-9 w-9 rounded-full text-inherit hover:bg-sidebar-accent/70"
-          >
-            <Users className="w-4 h-4" />
-          </Button>
-        </Link>
-      </div>
 
       {/* Bottom Right: Account quick info (Info button toggles card) */}
       <div className="fixed bottom-4 right-4 z-[200]">
