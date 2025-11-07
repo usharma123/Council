@@ -1,8 +1,12 @@
 "use client"
 
-import React from 'react'
+import type { ReactNode } from 'react'
 
-const ChatHeader: React.FC = () => {
+interface ChatHeaderProps {
+  actions?: ReactNode
+}
+
+const ChatHeader = ({ actions }: ChatHeaderProps) => {
   return (
     <div className="w-full hidden md:block relative">
       <div
@@ -41,6 +45,11 @@ const ChatHeader: React.FC = () => {
             />
           </svg>
         </div>
+        {actions ? (
+          <div className="pointer-events-auto absolute inset-0 flex items-center justify-center px-6">
+            <div className="flex items-center gap-2.5">{actions}</div>
+          </div>
+        ) : null}
       </div>
     </div>
   )
